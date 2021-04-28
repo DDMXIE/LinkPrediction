@@ -476,13 +476,13 @@ if __name__ == '__main__':
     print(AUC_PA)
 
     # AA
-    sim_matrix_AA = computeByLHN(data_grid_train_adjMatrix)
+    sim_matrix_AA = computeByAA(data_grid_train_adjMatrix)
     AUC_AA = getAccuracy(sim_matrix_AA, nonexist_matrix, data_grid_test)
     print('----AUC_AA----')
     print(AUC_AA)
 
     # RA
-    sim_matrix_RA = computeByLHN(data_grid_train_adjMatrix)
+    sim_matrix_RA = computeByRA(data_grid_train_adjMatrix)
     AUC_RA = getAccuracy(sim_matrix_RA, nonexist_matrix, data_grid_test)
     print('----AUC_RA----')
     print(AUC_RA)
@@ -587,7 +587,7 @@ if __name__ == '__main__':
     print('AUC RA: %.5f' % auc_RA)
 
     auc_LP = Decimal(AUC_LP).quantize(Decimal("0.00000"))
-    print('AUC LP: %.6f' % auc_LP)
+    print('AUC LP: %.5f' % auc_LP)
 
     print('\n-------------------- AUC based on ROC curve ---------------------\n')
 
@@ -595,31 +595,31 @@ if __name__ == '__main__':
     print('ROC AUC CN: %.5f' % roc_auc_CN)
 
     roc_auc_Salton = Decimal(ROC_AUC_Salton).quantize(Decimal("0.00000"))
-    print('AUC Salton: %.5f' % roc_auc_Salton)
+    print('ROC AUC Salton: %.5f' % roc_auc_Salton)
 
     roc_auc_Sorensen = Decimal(ROC_AUC_Sorensen).quantize(Decimal("0.00000"))
-    print('AUC Sorensen: %.5f' % roc_auc_Sorensen)
+    print('ROC AUC Sorensen: %.5f' % roc_auc_Sorensen)
 
     roc_auc_HPI = Decimal(ROC_AUC_HPI).quantize(Decimal("0.00000"))
-    print('AUC HPI: %.5f' % roc_auc_HPI)
+    print('ROC AUC HPI: %.5f' % roc_auc_HPI)
 
     roc_auc_HDI = Decimal(ROC_AUC_HDI).quantize(Decimal("0.00000"))
-    print('AUC HDI: %.5f' % roc_auc_HDI)
+    print('ROC AUC HDI: %.5f' % roc_auc_HDI)
 
     roc_auc_LHN = Decimal(ROC_AUC_LHN).quantize(Decimal("0.00000"))
-    print('AUC LHN: %.5f' % roc_auc_LHN)
+    print('ROC AUC LHN: %.5f' % roc_auc_LHN)
 
     roc_auc_PA = Decimal(ROC_AUC_PA).quantize(Decimal("0.00000"))
-    print('AUC PA: %.5f' % roc_auc_PA)
+    print('ROC AUC PA: %.5f' % roc_auc_PA)
 
     roc_auc_AA = Decimal(ROC_AUC_AA).quantize(Decimal("0.00000"))
-    print('AUC PA: %.5f' % roc_auc_AA)
+    print('ROC AUC AA: %.5f' % roc_auc_AA)
 
     roc_auc_RA = Decimal(ROC_AUC_RA).quantize(Decimal("0.00000"))
-    print('AUC RA: %.5f' % roc_auc_RA)
+    print('ROC AUC RA: %.5f' % roc_auc_RA)
 
     roc_auc_LP = Decimal(ROC_AUC_LP).quantize(Decimal("0.00000"))
-    print('AUC LP: %.6f' % roc_auc_LP)
+    print('ROC AUC LP: %.5f' % roc_auc_LP)
 
 
 
