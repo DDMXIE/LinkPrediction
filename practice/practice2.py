@@ -273,24 +273,21 @@ def getAccuracy(multi_grid_train_matrix, nonexist_matrix, data_grid_test):
     rowCount = 0
     missingLinkList = []
     nonexistentLinkList = []
+    print('-----computing1-----')
     for row in data_grid_test.values:
         i = row[0] - 1
         j = row[1] - 1
-        # i = row[0]
-        # j = row[1]
         missingLinkList.append(multi_grid_train_matrix[i][j])
         rowCount = rowCount + 1
-        print('-----computing1-----')
 
     rowCount2 = 0
+    print('-----computing2-----')
     for row2 in nonexist_matrix.values:
         i = row2[0]
         j = row2[1]
-        # i = row[0]
-        # j = row[1]
         nonexistentLinkList.append(multi_grid_train_matrix[i][j])
         rowCount2 = rowCount2 + 1
-        print('-----computing2-----')
+
 
     missingLinkList_np = np.array(missingLinkList)
     nonexistentLinkList_np = np.array(nonexistentLinkList)
@@ -298,9 +295,9 @@ def getAccuracy(multi_grid_train_matrix, nonexist_matrix, data_grid_test):
     temp = 0    # 分子
     deno = 0    # 分母
     count = 0
-    for i in len(missingLinkList_np):
-        count_caseA = np.sum(nonexistentLinkList_np < missingLinkList_np[i])
-        count_caseB = np.sum(nonexistentLinkList_np == missingLinkList_np[i])
+    for i in range(len(missingLinkList_np)):
+        count_caseA = np.sum(nonexistentLinkList_np < missingLinkList_np[i])    # n'
+        count_caseB = np.sum(nonexistentLinkList_np == missingLinkList_np[i])   # n"
         temp = temp + count_caseA
         temp = temp + (count_caseB * 0.5)
         deno = deno + len(nonexistentLinkList_np)
@@ -309,12 +306,8 @@ def getAccuracy(multi_grid_train_matrix, nonexist_matrix, data_grid_test):
     auc = temp / deno
     print('----auc----')
     print(auc)
-    # print('--missingLinkList')
-    # missingLinkList_df = pd.DataFrame(missingLinkList)
-    # missingLinkList_df[1] = missingLinkList_df[0].rank(ascending=False)
-    # print(missingLinkList_df)
 
-    return ''
+    return auc
 
 if __name__ == '__main__':
     # 初始化 解析
@@ -361,7 +354,48 @@ if __name__ == '__main__':
 
     # CN
     sim_matrix_CN = computeByCN(data_grid_train_adjMatrix)
-    getAccuracy(sim_matrix_CN, nonexist_matrix, data_grid_test)
+    AUC_CN = getAccuracy(sim_matrix_CN, nonexist_matrix, data_grid_test)
+    print('----AUC_CN----')
+    print(AUC_CN)
+
+    # Salton
+    sim_matrix_Salton = computeBySalton(data_grid_train_adjMatrix)
+    AUC_Salton = getAccuracy(sim_matrix_Salton, nonexist_matrix, data_grid_test)
+    print('----AUC_Salton----')
+    print(AUC_Salton)
+
+    # LP
+    sim_matrix_LP = computeByLP(data_grid_train_adjMatrix)
+    AUC_LP = getAccuracy(sim_matrix_LP, nonexist_matrix, data_grid_test)
+    print('----AUC_LP----')
+    print(AUC_LP)
+
+    # Grid DataSet AUC
+    print('\n')
+    print('\n-------------- Grid DataSet --------------\n')
+    auc_CN = Decimal(AUC_CN).quantize(Decimal("0.000"))
+    print('AUC CN: %.3f' % auc_CN)
+
+    auc_Salton = Decimal(AUC_Salton).quantize(Decimal("0.000"))
+    print('AUC Salton: %.3f' % auc_Salton)
+
+    # auc_Sorensen = Decimal(AUC_Sorensen).quantize(Decimal("0.000"))
+    # print('AUC Sorensen: %.3f' % auc_Sorensen)
+    #
+    # auc_HPI = Decimal(AUC_HPI).quantize(Decimal("0.000"))
+    # print('AUC HPI: %.3f' % auc_HPI)
+    #
+    # auc_HDI = Decimal(AUC_HDI).quantize(Decimal("0.000"))
+    # print('AUC HDI: %.3f' % auc_HDI)
+    #
+    # auc_LHN = Decimal(AUC_LHN).quantize(Decimal("0.000"))
+    # print('AUC LHN: %.3f' % auc_LHN)
+    #
+    # auc_PA = Decimal(AUC_PA).quantize(Decimal("0.000"))
+    # print('AUC PA: %.3f' % auc_PA)
+
+    auc_LP = Decimal(AUC_LP).quantize(Decimal("0.000"))
+    print('AUC LP: %.3f' % auc_LP)
 
 
 
