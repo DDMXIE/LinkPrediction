@@ -196,11 +196,11 @@ def computeBySalton(data_grid_train_adjMatrix):
 def computeBySorensen(data_grid_train_adjMatrix):
     # 得到train*train的矩阵
     sim_Sorensen = getSimMatrixBySorensen(data_grid_train_adjMatrix)
-    multi_grid_train_matrix_Salton = sim_Sorensen * 2
-    print('-------Salton simMatrix-------')
-    print(multi_grid_train_matrix_Salton)
+    multi_grid_train_matrix_Sorensen = sim_Sorensen * 2
+    print('-------Sorensen simMatrix-------')
+    print(multi_grid_train_matrix_Sorensen)
 
-    return multi_grid_train_matrix_Salton
+    return multi_grid_train_matrix_Sorensen
 
 # HPI算法处理
 def computeByHPI(data_grid_train_adjMatrix):

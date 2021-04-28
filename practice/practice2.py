@@ -87,8 +87,6 @@ def getSimMatrixByCN(matrix1, matrix2):
 # Salton的相似度矩阵算法
 def getSimMatrixBySalton(matrix):
     cos_matrix = cosine_similarity(matrix)
-    print('----cos_matrix----')
-    print(cos_matrix)
     return cos_matrix
 
 # Sorensen的相似度矩阵算法
@@ -162,15 +160,9 @@ def getSimMatrixByLHN(matrix):
 
 # PA的相似度矩阵算法
 def getSimMatrixByPA(matrix):
-    sim_matrix = []
-    rowCount = 0
-    for row in matrix.values:
-        rowArr = np.array(row)
-        degreeArr = np.array(matrix.sum(axis=0))
-        item = degreeArr * (rowArr[rowCount])
-        sim_matrix.append(item)
-        rowCount = rowCount + 1
-        print('-----computing-----')
+    degreeArr = np.array(matrix.sum(axis=0))
+    degreeArr_df = pd.DataFrame(degreeArr)
+    sim_matrix = np.dot(degreeArr_df, degreeArr_df.T)
     sim_matrix_df = pd.DataFrame(sim_matrix)
     return sim_matrix_df
 
@@ -216,11 +208,11 @@ def computeBySalton(data_grid_train_adjMatrix):
 def computeBySorensen(data_grid_train_adjMatrix):
     # 得到train*train的矩阵
     sim_Sorensen = getSimMatrixBySorensen(data_grid_train_adjMatrix)
-    multi_grid_train_matrix_Salton = sim_Sorensen * 2
-    print('-------Salton simMatrix-------')
-    print(multi_grid_train_matrix_Salton)
+    multi_grid_train_matrix_Sorensen = sim_Sorensen * 2
+    print('-------Sorensen simMatrix-------')
+    print(multi_grid_train_matrix_Sorensen)
 
-    return multi_grid_train_matrix_Salton
+    return multi_grid_train_matrix_Sorensen
 
 # HPI算法处理
 def computeByHPI(data_grid_train_adjMatrix):
@@ -328,17 +320,17 @@ if __name__ == '__main__':
 
     # 求出邻接矩阵
     # 总邻接矩阵
-    data_grid_adjMatrix = getAdjacencyMatrix(data_grid_df, len(data_grid_df))
+    data_grid_adjMatrix = getAdjacencyMatrix(data_grid_df, 4941)
 
 
     # 训练集的邻接矩阵
-    data_grid_train_adjMatrix = getAdjacencyMatrix(data_grid_train,  len(data_grid_df))
+    data_grid_train_adjMatrix = getAdjacencyMatrix(data_grid_train,  4941)
     print('-------训练集的邻接矩阵-------')
     print(data_grid_train_adjMatrix)
 
 
     # 测试集的邻接矩阵
-    data_grid_test_adjMatrix = getAdjacencyMatrix(data_grid_test, len(data_grid_df))
+    data_grid_test_adjMatrix = getAdjacencyMatrix(data_grid_test, 4941)
     print('-------测试集的邻接矩阵-------')
     print(data_grid_test_adjMatrix)
 
@@ -364,6 +356,36 @@ if __name__ == '__main__':
     print('----AUC_Salton----')
     print(AUC_Salton)
 
+    # Sorensen
+    sim_matrix_Sorensen = computeBySorensen(data_grid_train_adjMatrix)
+    AUC_Sorensen = getAccuracy(sim_matrix_Sorensen, nonexist_matrix, data_grid_test)
+    print('----AUC_Sorensen----')
+    print(AUC_Sorensen)
+
+    # HPI
+    sim_matrix_HPI = computeByHPI(data_grid_train_adjMatrix)
+    AUC_HPI = getAccuracy(sim_matrix_HPI, nonexist_matrix, data_grid_test)
+    print('----AUC_HPI----')
+    print(AUC_HPI)
+
+    # HDI
+    sim_matrix_HDI = computeByHDI(data_grid_train_adjMatrix)
+    AUC_HDI = getAccuracy(sim_matrix_HDI, nonexist_matrix, data_grid_test)
+    print('----AUC_HDI----')
+    print(AUC_HDI)
+
+    # LHN
+    sim_matrix_LHN = computeByLHN(data_grid_train_adjMatrix)
+    AUC_LHN = getAccuracy(sim_matrix_LHN, nonexist_matrix, data_grid_test)
+    print('----AUC_LHN----')
+    print(AUC_LHN)
+
+    # PA
+    sim_matrix_PA = computeByPA(data_grid_train_adjMatrix)
+    AUC_PA = getAccuracy(sim_matrix_PA, nonexist_matrix, data_grid_test)
+    print('----AUC_PA----')
+    print(AUC_PA)
+
     # LP
     sim_matrix_LP = computeByLP(data_grid_train_adjMatrix)
     AUC_LP = getAccuracy(sim_matrix_LP, nonexist_matrix, data_grid_test)
@@ -373,29 +395,29 @@ if __name__ == '__main__':
     # Grid DataSet AUC
     print('\n')
     print('\n-------------- Grid DataSet --------------\n')
-    auc_CN = Decimal(AUC_CN).quantize(Decimal("0.000"))
-    print('AUC CN: %.3f' % auc_CN)
+    auc_CN = Decimal(AUC_CN).quantize(Decimal("0.00000"))
+    print('AUC CN: %.6f' % auc_CN)
 
-    auc_Salton = Decimal(AUC_Salton).quantize(Decimal("0.000"))
-    print('AUC Salton: %.3f' % auc_Salton)
+    auc_Salton = Decimal(AUC_Salton).quantize(Decimal("0.00000"))
+    print('AUC Salton: %.6f' % auc_Salton)
 
-    # auc_Sorensen = Decimal(AUC_Sorensen).quantize(Decimal("0.000"))
-    # print('AUC Sorensen: %.3f' % auc_Sorensen)
-    #
-    # auc_HPI = Decimal(AUC_HPI).quantize(Decimal("0.000"))
-    # print('AUC HPI: %.3f' % auc_HPI)
-    #
-    # auc_HDI = Decimal(AUC_HDI).quantize(Decimal("0.000"))
-    # print('AUC HDI: %.3f' % auc_HDI)
-    #
-    # auc_LHN = Decimal(AUC_LHN).quantize(Decimal("0.000"))
-    # print('AUC LHN: %.3f' % auc_LHN)
-    #
-    # auc_PA = Decimal(AUC_PA).quantize(Decimal("0.000"))
-    # print('AUC PA: %.3f' % auc_PA)
+    auc_Sorensen = Decimal(AUC_Sorensen).quantize(Decimal("0.00000"))
+    print('AUC Sorensen: %.6f' % auc_Sorensen)
 
-    auc_LP = Decimal(AUC_LP).quantize(Decimal("0.000"))
-    print('AUC LP: %.3f' % auc_LP)
+    auc_HPI = Decimal(AUC_HPI).quantize(Decimal("0.00000"))
+    print('AUC HPI: %.6f' % auc_HPI)
+
+    auc_HDI = Decimal(AUC_HDI).quantize(Decimal("0.00000"))
+    print('AUC HDI: %.6f' % auc_HDI)
+
+    auc_LHN = Decimal(AUC_LHN).quantize(Decimal("0.00000"))
+    print('AUC LHN: %.6f' % auc_LHN)
+
+    auc_PA = Decimal(AUC_PA).quantize(Decimal("0.00000"))
+    print('AUC PA: %.6f' % auc_PA)
+
+    auc_LP = Decimal(AUC_LP).quantize(Decimal("0.00000"))
+    print('AUC LP: %.6f' % auc_LP)
 
 
 
