@@ -11,6 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from decimal import Decimal
 from sklearn import metrics
 import random
+import math
 
 def loadData():
     data_grid = pd.read_csv('./data/Grid.txt', sep=' ', header=None, index_col=False)
@@ -167,6 +168,38 @@ def getSimMatrixByPA(matrix):
     sim_matrix_df = pd.DataFrame(sim_matrix)
     return sim_matrix_df
 
+# AA的相似度矩阵算法
+def getSimMatrixByAA(matrix):
+    degreeArr = np.array(matrix.sum(axis=0))
+    degreeArr_log = np.log(degreeArr)
+    print(degreeArr)
+    print(degreeArr_log)
+    weight_matrix = []
+    rowCount = 0
+    for row in matrix.values:
+        rowArr = np.array(row)
+        item = rowArr / degreeArr_log[rowCount]
+        weight_matrix.append(item)
+    weight_matrix_df = pd.DataFrame(weight_matrix)
+    sim_matrix = np.dot(matrix, weight_matrix_df)
+    sim_matrix_df = pd.DataFrame(sim_matrix)
+    return sim_matrix_df
+
+# RA的相似度矩阵算法
+def getSimMatrixByRA(matrix):
+    degreeArr = np.array(matrix.sum(axis=0))
+    print(degreeArr)
+    weight_matrix = []
+    rowCount = 0
+    for row in matrix.values:
+        rowArr = np.array(row)
+        item = rowArr / degreeArr[rowCount]
+        weight_matrix.append(item)
+    weight_matrix_df = pd.DataFrame(weight_matrix)
+    sim_matrix = np.dot(matrix, weight_matrix_df)
+    sim_matrix_df = pd.DataFrame(sim_matrix)
+    return sim_matrix_df
+
 # LP的相似度矩阵算法
 def getSimMatrixByLP(matrix1, matrix2):
     # scipy转变为稀疏矩阵
@@ -250,6 +283,24 @@ def computeByPA(data_grid_train_adjMatrix):
     print(multi_grid_train_matrix_PA)
 
     return multi_grid_train_matrix_PA
+
+# AA算法处理
+def computeByAA(data_grid_train_adjMatrix):
+    # 得到train*train的矩阵
+    multi_grid_train_matrix_AA = getSimMatrixByAA(data_grid_train_adjMatrix)
+    print('-------AA simMatrix-------')
+    print(multi_grid_train_matrix_AA)
+
+    return multi_grid_train_matrix_AA
+
+# RA算法处理
+def computeByRA(data_grid_train_adjMatrix):
+    # 得到train*train的矩阵
+    multi_grid_train_matrix_RA = getSimMatrixByRA(data_grid_train_adjMatrix)
+    print('-------RA simMatrix-------')
+    print(multi_grid_train_matrix_RA)
+
+    return multi_grid_train_matrix_RA
 
 # LP算法处理
 def computeByLP(data_grid_train_adjMatrix):
@@ -431,17 +482,60 @@ if __name__ == '__main__':
     # print(AUC_LP)
     #
 
+    # -------------------------------- compute AUC based on ROC ----------------------------------
     # CN
     sim_matrix_CN = computeByCN(data_grid_train_adjMatrix)
     ROC_AUC_CN = getAccuracyByROC(sim_matrix_CN, nonexist_matrix, data_grid_test)
     print('----ROC_AUC_CN----')
     print(ROC_AUC_CN)
 
+    # Salton
+    sim_matrix_Salton = computeBySalton(data_grid_train_adjMatrix)
+    ROC_AUC_Salton = getAccuracyByROC(sim_matrix_Salton, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_Salton----')
+    print(ROC_AUC_Salton)
+
+    # Sorensen
+    sim_matrix_Sorensen = computeBySorensen(data_grid_train_adjMatrix)
+    ROC_AUC_Sorensen = getAccuracyByROC(sim_matrix_Sorensen, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_Sorensen----')
+    print(ROC_AUC_Sorensen)
+
+    # HPI
+    sim_matrix_HPI = computeByHPI(data_grid_train_adjMatrix)
+    ROC_AUC_HPI = getAccuracyByROC(sim_matrix_HPI, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_HPI----')
+    print(ROC_AUC_HPI)
+
+    # HDI
+    sim_matrix_HDI = computeByHDI(data_grid_train_adjMatrix)
+    ROC_AUC_HDI = getAccuracyByROC(sim_matrix_HDI, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_HDI----')
+    print(ROC_AUC_HDI)
+
+    # LHN
+    sim_matrix_LHN = computeByLHN(data_grid_train_adjMatrix)
+    ROC_AUC_LHN = getAccuracyByROC(sim_matrix_LHN, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_LHN----')
+    print(ROC_AUC_LHN)
+
     # PA
     sim_matrix_PA = computeByPA(data_grid_train_adjMatrix)
     ROC_AUC_PA = getAccuracyByROC(sim_matrix_PA, nonexist_matrix, data_grid_test)
     print('----ROC_AUC_PA----')
     print(ROC_AUC_PA)
+
+    # AA
+    sim_matrix_AA = computeByAA(data_grid_train_adjMatrix)
+    ROC_AUC_AA = getAccuracyByROC(sim_matrix_AA, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_AA----')
+    print(ROC_AUC_AA)
+
+    # RA
+    sim_matrix_RA = computeByRA(data_grid_train_adjMatrix)
+    ROC_AUC_RA = getAccuracyByROC(sim_matrix_RA, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_RA----')
+    print(ROC_AUC_RA)
 
     # LP
     sim_matrix_LP = computeByLP(data_grid_train_adjMatrix)
@@ -451,7 +545,8 @@ if __name__ == '__main__':
 
     # Grid DataSet AUC
     print('\n')
-    print('\n-------------- Grid DataSet --------------\n')
+    print('\n----------------------- Grid DataSet ----------------------\n')
+    # print('\n------------------------- AUC -------------------------\n')
     # auc_CN = Decimal(AUC_CN).quantize(Decimal("0.00000"))
     # print('AUC CN: %.5f' % auc_CN)
 
@@ -476,11 +571,34 @@ if __name__ == '__main__':
     # auc_LP = Decimal(AUC_LP).quantize(Decimal("0.00000"))
     # print('AUC LP: %.6f' % auc_LP)
 
+    print('\n-------------------- AUC based on ROC curve ---------------------\n')
+
     roc_auc_CN = Decimal(ROC_AUC_CN).quantize(Decimal("0.00000"))
     print('ROC AUC CN: %.5f' % roc_auc_CN)
 
+    roc_auc_Salton = Decimal(ROC_AUC_Salton).quantize(Decimal("0.00000"))
+    print('AUC Salton: %.5f' % roc_auc_Salton)
+
+    roc_auc_Sorensen = Decimal(ROC_AUC_Sorensen).quantize(Decimal("0.00000"))
+    print('AUC Sorensen: %.5f' % roc_auc_Sorensen)
+
+    roc_auc_HPI = Decimal(ROC_AUC_HPI).quantize(Decimal("0.00000"))
+    print('AUC HPI: %.5f' % roc_auc_HPI)
+
+    roc_auc_HDI = Decimal(ROC_AUC_HDI).quantize(Decimal("0.00000"))
+    print('AUC HDI: %.5f' % roc_auc_HDI)
+
+    roc_auc_LHN = Decimal(ROC_AUC_LHN).quantize(Decimal("0.00000"))
+    print('AUC LHN: %.5f' % roc_auc_LHN)
+
     roc_auc_PA = Decimal(ROC_AUC_PA).quantize(Decimal("0.00000"))
     print('AUC PA: %.5f' % roc_auc_PA)
+
+    roc_auc_AA = Decimal(ROC_AUC_AA).quantize(Decimal("0.00000"))
+    print('AUC PA: %.5f' % roc_auc_AA)
+
+    roc_auc_RA = Decimal(ROC_AUC_RA).quantize(Decimal("0.00000"))
+    print('AUC RA: %.5f' % roc_auc_RA)
 
     roc_auc_LP = Decimal(ROC_AUC_LP).quantize(Decimal("0.00000"))
     print('AUC LP: %.6f' % roc_auc_LP)
