@@ -10,6 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics.pairwise import cosine_similarity
 from decimal import Decimal
 from sklearn import metrics
+import random
 
 def loadData():
     data_grid = pd.read_csv('./data/Grid.txt', sep=' ', header=None, index_col=False)
@@ -301,6 +302,43 @@ def getAccuracy(multi_grid_train_matrix, nonexist_matrix, data_grid_test):
 
     return auc
 
+# 计算AUC
+def getAccuracyByROC(multi_grid_train_matrix, nonexist_matrix, data_grid_test):
+    rowCount = 0
+    missingLinkList = []
+    nonexistentLinkList = []
+    print('-----computing1-----')
+    for row in data_grid_test.values:
+        i = row[0] - 1
+        j = row[1] - 1
+        missingLinkList.append(multi_grid_train_matrix[i][j])
+        rowCount = rowCount + 1
+
+    rowCount2 = 0
+    print('-----computing2-----')
+    for row2 in nonexist_matrix.values:
+        i = row2[0]
+        j = row2[1]
+        nonexistentLinkList.append(multi_grid_train_matrix[i][j])
+        rowCount2 = rowCount2 + 1
+
+    missingLinkList_np = np.array(missingLinkList)
+    len_missingList = len(missingLinkList_np)
+
+    aa = np.ones((1, len_missingList))
+    bb = np.zeros((1, len_missingList))
+    tpl_flag_arr = np.append(aa, bb)
+
+    nonexistentLinkList_np_random = random.sample(nonexistentLinkList, len_missingList)
+    tpl_sample_arr = np.append(missingLinkList_np, nonexistentLinkList_np_random)
+
+    y = tpl_flag_arr
+    pred = tpl_sample_arr
+    fpr, tpr, thresholds = metrics.roc_curve(y, pred, pos_label=1)
+
+    return metrics.auc(fpr, tpr)
+
+
 if __name__ == '__main__':
     # 初始化 解析
     data_grid = loadData()
@@ -344,80 +382,108 @@ if __name__ == '__main__':
     # 找到不存在的边
     nonexist_matrix = getContraryDf(data_grid_contrary)
 
+    # # CN
+    # sim_matrix_CN = computeByCN(data_grid_train_adjMatrix)
+    # AUC_CN = getAccuracy(sim_matrix_CN, nonexist_matrix, data_grid_test)
+    # print('----AUC_CN----')
+    # print(AUC_CN)
+
+    # # Salton
+    # sim_matrix_Salton = computeBySalton(data_grid_train_adjMatrix)
+    # AUC_Salton = getAccuracy(sim_matrix_Salton, nonexist_matrix, data_grid_test)
+    # print('----AUC_Salton----')
+    # print(AUC_Salton)
+    #
+    # # Sorensen
+    # sim_matrix_Sorensen = computeBySorensen(data_grid_train_adjMatrix)
+    # AUC_Sorensen = getAccuracy(sim_matrix_Sorensen, nonexist_matrix, data_grid_test)
+    # print('----AUC_Sorensen----')
+    # print(AUC_Sorensen)
+    #
+    # # HPI
+    # sim_matrix_HPI = computeByHPI(data_grid_train_adjMatrix)
+    # AUC_HPI = getAccuracy(sim_matrix_HPI, nonexist_matrix, data_grid_test)
+    # print('----AUC_HPI----')
+    # print(AUC_HPI)
+    #
+    # # HDI
+    # sim_matrix_HDI = computeByHDI(data_grid_train_adjMatrix)
+    # AUC_HDI = getAccuracy(sim_matrix_HDI, nonexist_matrix, data_grid_test)
+    # print('----AUC_HDI----')
+    # print(AUC_HDI)
+    #
+    # # LHN
+    # sim_matrix_LHN = computeByLHN(data_grid_train_adjMatrix)
+    # AUC_LHN = getAccuracy(sim_matrix_LHN, nonexist_matrix, data_grid_test)
+    # print('----AUC_LHN----')
+    # print(AUC_LHN)
+    #
+    # # PA
+    # sim_matrix_PA = computeByPA(data_grid_train_adjMatrix)
+    # AUC_PA = getAccuracy(sim_matrix_PA, nonexist_matrix, data_grid_test)
+    # print('----AUC_PA----')
+    # print(AUC_PA)
+    #
+    # # LP
+    # sim_matrix_LP = computeByLP(data_grid_train_adjMatrix)
+    # AUC_LP = getAccuracy(sim_matrix_LP, nonexist_matrix, data_grid_test)
+    # print('----AUC_LP----')
+    # print(AUC_LP)
+    #
+
     # CN
     sim_matrix_CN = computeByCN(data_grid_train_adjMatrix)
-    AUC_CN = getAccuracy(sim_matrix_CN, nonexist_matrix, data_grid_test)
-    print('----AUC_CN----')
-    print(AUC_CN)
-
-    # Salton
-    sim_matrix_Salton = computeBySalton(data_grid_train_adjMatrix)
-    AUC_Salton = getAccuracy(sim_matrix_Salton, nonexist_matrix, data_grid_test)
-    print('----AUC_Salton----')
-    print(AUC_Salton)
-
-    # Sorensen
-    sim_matrix_Sorensen = computeBySorensen(data_grid_train_adjMatrix)
-    AUC_Sorensen = getAccuracy(sim_matrix_Sorensen, nonexist_matrix, data_grid_test)
-    print('----AUC_Sorensen----')
-    print(AUC_Sorensen)
-
-    # HPI
-    sim_matrix_HPI = computeByHPI(data_grid_train_adjMatrix)
-    AUC_HPI = getAccuracy(sim_matrix_HPI, nonexist_matrix, data_grid_test)
-    print('----AUC_HPI----')
-    print(AUC_HPI)
-
-    # HDI
-    sim_matrix_HDI = computeByHDI(data_grid_train_adjMatrix)
-    AUC_HDI = getAccuracy(sim_matrix_HDI, nonexist_matrix, data_grid_test)
-    print('----AUC_HDI----')
-    print(AUC_HDI)
-
-    # LHN
-    sim_matrix_LHN = computeByLHN(data_grid_train_adjMatrix)
-    AUC_LHN = getAccuracy(sim_matrix_LHN, nonexist_matrix, data_grid_test)
-    print('----AUC_LHN----')
-    print(AUC_LHN)
+    ROC_AUC_CN = getAccuracyByROC(sim_matrix_CN, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_CN----')
+    print(ROC_AUC_CN)
 
     # PA
     sim_matrix_PA = computeByPA(data_grid_train_adjMatrix)
-    AUC_PA = getAccuracy(sim_matrix_PA, nonexist_matrix, data_grid_test)
-    print('----AUC_PA----')
-    print(AUC_PA)
+    ROC_AUC_PA = getAccuracyByROC(sim_matrix_PA, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_PA----')
+    print(ROC_AUC_PA)
 
     # LP
     sim_matrix_LP = computeByLP(data_grid_train_adjMatrix)
-    AUC_LP = getAccuracy(sim_matrix_LP, nonexist_matrix, data_grid_test)
-    print('----AUC_LP----')
-    print(AUC_LP)
+    ROC_AUC_LP = getAccuracyByROC(sim_matrix_LP, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_LP----')
+    print(ROC_AUC_LP)
 
     # Grid DataSet AUC
     print('\n')
     print('\n-------------- Grid DataSet --------------\n')
-    auc_CN = Decimal(AUC_CN).quantize(Decimal("0.00000"))
-    print('AUC CN: %.6f' % auc_CN)
+    # auc_CN = Decimal(AUC_CN).quantize(Decimal("0.00000"))
+    # print('AUC CN: %.5f' % auc_CN)
 
-    auc_Salton = Decimal(AUC_Salton).quantize(Decimal("0.00000"))
-    print('AUC Salton: %.6f' % auc_Salton)
+    # auc_Salton = Decimal(AUC_Salton).quantize(Decimal("0.00000"))
+    # print('AUC Salton: %.5f' % auc_Salton)
+    #
+    # auc_Sorensen = Decimal(AUC_Sorensen).quantize(Decimal("0.00000"))
+    # print('AUC Sorensen: %.5f' % auc_Sorensen)
+    #
+    # auc_HPI = Decimal(AUC_HPI).quantize(Decimal("0.00000"))
+    # print('AUC HPI: %.5f' % auc_HPI)
+    #
+    # auc_HDI = Decimal(AUC_HDI).quantize(Decimal("0.00000"))
+    # print('AUC HDI: %.5f' % auc_HDI)
+    #
+    # auc_LHN = Decimal(AUC_LHN).quantize(Decimal("0.00000"))
+    # print('AUC LHN: %.5f' % auc_LHN)
+    #
+    # auc_PA = Decimal(AUC_PA).quantize(Decimal("0.00000"))
+    # print('AUC PA: %.5f' % auc_PA)
+    #
+    # auc_LP = Decimal(AUC_LP).quantize(Decimal("0.00000"))
+    # print('AUC LP: %.6f' % auc_LP)
 
-    auc_Sorensen = Decimal(AUC_Sorensen).quantize(Decimal("0.00000"))
-    print('AUC Sorensen: %.6f' % auc_Sorensen)
+    roc_auc_CN = Decimal(ROC_AUC_CN).quantize(Decimal("0.00000"))
+    print('ROC AUC CN: %.5f' % roc_auc_CN)
 
-    auc_HPI = Decimal(AUC_HPI).quantize(Decimal("0.00000"))
-    print('AUC HPI: %.6f' % auc_HPI)
+    roc_auc_PA = Decimal(ROC_AUC_PA).quantize(Decimal("0.00000"))
+    print('AUC PA: %.5f' % roc_auc_PA)
 
-    auc_HDI = Decimal(AUC_HDI).quantize(Decimal("0.00000"))
-    print('AUC HDI: %.6f' % auc_HDI)
-
-    auc_LHN = Decimal(AUC_LHN).quantize(Decimal("0.00000"))
-    print('AUC LHN: %.6f' % auc_LHN)
-
-    auc_PA = Decimal(AUC_PA).quantize(Decimal("0.00000"))
-    print('AUC PA: %.6f' % auc_PA)
-
-    auc_LP = Decimal(AUC_LP).quantize(Decimal("0.00000"))
-    print('AUC LP: %.6f' % auc_LP)
+    roc_auc_LP = Decimal(ROC_AUC_LP).quantize(Decimal("0.00000"))
+    print('AUC LP: %.6f' % roc_auc_LP)
 
 
 
