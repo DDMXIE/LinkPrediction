@@ -241,7 +241,6 @@ def getSimMatrixByLP(matrix1, matrix2):
 
 # CN算法处理
 def computeByCN(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_CN = getSimMatrixByCN(data_grid_train_adjMatrix, data_grid_train_adjMatrix)
     print('-------CN simMatrix-------')
     print(multi_grid_train_matrix_CN)
@@ -255,7 +254,6 @@ def computeByCN(data_grid_train_adjMatrix):
 
 # Salton算法处理
 def computeBySalton(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_Salton = getSimMatrixBySalton(data_grid_train_adjMatrix)
     print('-------Salton simMatrix-------')
     print(multi_grid_train_matrix_Salton)
@@ -264,7 +262,6 @@ def computeBySalton(data_grid_train_adjMatrix):
 
 # Salton算法处理
 def computeByJaccard(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_Jaccard = getSimMatrixByJaccard(data_grid_train_adjMatrix)
     print('-------Jaccard simMatrix-------')
     print(multi_grid_train_matrix_Jaccard)
@@ -273,7 +270,6 @@ def computeByJaccard(data_grid_train_adjMatrix):
 
 # Sorensen算法处理
 def computeBySorensen(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     sim_Sorensen = getSimMatrixBySorensen(data_grid_train_adjMatrix)
     multi_grid_train_matrix_Sorensen = sim_Sorensen * 2
     print('-------Sorensen simMatrix-------')
@@ -283,7 +279,6 @@ def computeBySorensen(data_grid_train_adjMatrix):
 
 # HPI算法处理
 def computeByHPI(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_HPI = getSimMatrixByHPI(data_grid_train_adjMatrix)
     print('-------HPI simMatrix-------')
     print(multi_grid_train_matrix_HPI)
@@ -292,7 +287,6 @@ def computeByHPI(data_grid_train_adjMatrix):
 
 # HDI算法处理
 def computeByHDI(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_HDI = getSimMatrixByHDI(data_grid_train_adjMatrix)
     print('-------HDI simMatrix-------')
     print(multi_grid_train_matrix_HDI)
@@ -301,7 +295,6 @@ def computeByHDI(data_grid_train_adjMatrix):
 
 # LHN算法处理
 def computeByLHN(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_LHN = getSimMatrixByLHN(data_grid_train_adjMatrix)
     print('-------LHN simMatrix-------')
     print(multi_grid_train_matrix_LHN)
@@ -310,7 +303,6 @@ def computeByLHN(data_grid_train_adjMatrix):
 
 # PA算法处理
 def computeByPA(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_PA = getSimMatrixByPA(data_grid_train_adjMatrix)
     print('-------PA simMatrix-------')
     print(multi_grid_train_matrix_PA)
@@ -319,7 +311,6 @@ def computeByPA(data_grid_train_adjMatrix):
 
 # AA算法处理
 def computeByAA(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_AA = getSimMatrixByAA(data_grid_train_adjMatrix)
     print('-------AA simMatrix-------')
     print(multi_grid_train_matrix_AA)
@@ -328,7 +319,6 @@ def computeByAA(data_grid_train_adjMatrix):
 
 # RA算法处理
 def computeByRA(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_RA = getSimMatrixByRA(data_grid_train_adjMatrix)
     print('-------RA simMatrix-------')
     print(multi_grid_train_matrix_RA)
@@ -337,7 +327,6 @@ def computeByRA(data_grid_train_adjMatrix):
 
 # LP算法处理
 def computeByLP(data_grid_train_adjMatrix):
-    # 得到train*train的矩阵
     multi_grid_train_matrix_LP = getSimMatrixByLP(data_grid_train_adjMatrix, data_grid_train_adjMatrix)
     print('-------LP simMatrix-------')
     print(multi_grid_train_matrix_LP)
