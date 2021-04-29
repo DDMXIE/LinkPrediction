@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 import scipy as sp
 from sklearn.model_selection import train_test_split
-from sklearn.metrics.pairwise import cosine_similarity
 from decimal import Decimal
 from sklearn import metrics
 import random
@@ -88,8 +87,33 @@ def getSimMatrixByCN(matrix1, matrix2):
 
 # Salton的相似度矩阵算法
 def getSimMatrixBySalton(matrix):
-    cos_matrix = cosine_similarity(matrix)
-    return cos_matrix
+    matrix_new = getSimMatrixByCN(matrix, matrix)
+    sim_matrix = []
+    rowCount = 0
+    for row in matrix_new.values:
+        rowArr = np.array(row)
+        degreeArr = np.array(matrix.sum(axis=0))
+        item = degreeArr * (rowArr[rowCount])
+        item[item == 0] = 1
+        item1 = np.sqrt(np.array(item))
+        c = np.array(row) / np.array(item1)
+        sim_matrix.append(c)
+        rowCount = rowCount + 1
+        # print('-----computing-----')
+    sim_matrix_df = pd.DataFrame(sim_matrix)
+    return sim_matrix_df
+
+# Jaccard的相似度矩阵算法
+def getSimMatrixByJaccard(matrix):
+    matrix_new = getSimMatrixByCN(matrix, matrix)
+    deg_row = sum(matrix.values)
+    deg_row.shape = (deg_row.shape[0], 1)
+    deg_row_T = deg_row.T
+    degree_matrix = deg_row + deg_row_T
+    matrix_new2 = degree_matrix - matrix_new
+    sim_matrix = matrix_new / matrix_new2
+    sim_matrix_df = pd.DataFrame(sim_matrix)
+    return sim_matrix_df
 
 # Sorensen的相似度矩阵算法
 def getSimMatrixBySorensen(matrix):
@@ -237,6 +261,15 @@ def computeBySalton(data_grid_train_adjMatrix):
     print(multi_grid_train_matrix_Salton)
 
     return multi_grid_train_matrix_Salton
+
+# Salton算法处理
+def computeByJaccard(data_grid_train_adjMatrix):
+    # 得到train*train的矩阵
+    multi_grid_train_matrix_Jaccard = getSimMatrixByJaccard(data_grid_train_adjMatrix)
+    print('-------Jaccard simMatrix-------')
+    print(multi_grid_train_matrix_Jaccard)
+
+    return multi_grid_train_matrix_Jaccard
 
 # Sorensen算法处理
 def computeBySorensen(data_grid_train_adjMatrix):
@@ -445,6 +478,12 @@ if __name__ == '__main__':
     print('----AUC_Salton----')
     print(AUC_Salton)
 
+    # Jaccard
+    sim_matrix_Jaccard = computeByJaccard(data_grid_train_adjMatrix)
+    AUC_Jaccard = getAccuracy(sim_matrix_Jaccard, nonexist_matrix, data_grid_test)
+    print('----AUC_Jaccard----')
+    print(AUC_Jaccard)
+
     # Sorensen
     sim_matrix_Sorensen = computeBySorensen(data_grid_train_adjMatrix)
     AUC_Sorensen = getAccuracy(sim_matrix_Sorensen, nonexist_matrix, data_grid_test)
@@ -492,7 +531,7 @@ if __name__ == '__main__':
     AUC_LP = getAccuracy(sim_matrix_LP, nonexist_matrix, data_grid_test)
     print('----AUC_LP----')
     print(AUC_LP)
-    #
+
 
     # -------------------------------- compute AUC based on ROC ----------------------------------
     # CN
@@ -506,6 +545,12 @@ if __name__ == '__main__':
     ROC_AUC_Salton = getAccuracyByROC(sim_matrix_Salton, nonexist_matrix, data_grid_test)
     print('----ROC_AUC_Salton----')
     print(ROC_AUC_Salton)
+
+    # Jaccard
+    # sim_matrix_Jaccard = computeByJaccard(data_grid_train_adjMatrix)
+    ROC_AUC_Jaccard = getAccuracyByROC(sim_matrix_Salton, nonexist_matrix, data_grid_test)
+    print('----ROC_AUC_Jaccard----')
+    print(ROC_AUC_Jaccard)
 
     # Sorensen
     # sim_matrix_Sorensen = computeBySorensen(data_grid_train_adjMatrix)
@@ -565,6 +610,9 @@ if __name__ == '__main__':
     auc_Salton = Decimal(AUC_Salton).quantize(Decimal("0.00000"))
     print('AUC Salton: %.5f' % auc_Salton)
 
+    auc_Jaccard = Decimal(AUC_Jaccard).quantize(Decimal("0.00000"))
+    print('AUC Jaccard: %.5f' % auc_Jaccard)
+
     auc_Sorensen = Decimal(AUC_Sorensen).quantize(Decimal("0.00000"))
     print('AUC Sorensen: %.5f' % auc_Sorensen)
 
@@ -596,6 +644,9 @@ if __name__ == '__main__':
 
     roc_auc_Salton = Decimal(ROC_AUC_Salton).quantize(Decimal("0.00000"))
     print('ROC AUC Salton: %.5f' % roc_auc_Salton)
+
+    roc_auc_Jaccard = Decimal(ROC_AUC_Jaccard).quantize(Decimal("0.00000"))
+    print('ROC AUC Jaccard: %.5f' % roc_auc_Jaccard)
 
     roc_auc_Sorensen = Decimal(ROC_AUC_Sorensen).quantize(Decimal("0.00000"))
     print('ROC AUC Sorensen: %.5f' % roc_auc_Sorensen)
