@@ -226,15 +226,17 @@ def getSimMatrixByRA(matrix):
 
 # LP的相似度矩阵算法
 def getSimMatrixByLP(matrix1, matrix2):
-    # scipy转变为稀疏矩阵
-    a = sp.sparse.csr_matrix(matrix1)
-    b = sp.sparse.csr_matrix(matrix2)
-    # 矩阵乘法
-    matrix = a.dot(b)
-    matrix2 = matrix.dot(a)
-    # 转化成dataframe形式
-    matrix_df_A2 = pd.DataFrame(matrix.todense())
-    matrix_df_A3 = pd.DataFrame(matrix2.todense())
+    # # scipy转变为稀疏矩阵
+    # a = sp.sparse.csr_matrix(matrix1)
+    # b = sp.sparse.csr_matrix(matrix2)
+    # # 矩阵乘法
+    # matrix = a.dot(b)
+    # matrix2 = matrix.dot(a)
+    # # 转化成dataframe形式
+    # matrix_df_A2 = pd.DataFrame(matrix.todense())
+    # matrix_df_A3 = pd.DataFrame(matrix2.todense())
+    matrix_df_A2 = getSimMatrixByCN(matrix1, matrix2)
+    matrix_df_A3 = getSimMatrixByCN(matrix_df_A2,matrix1)
     sim_matrix = matrix_df_A2 + (0.001 * matrix_df_A3)
     return sim_matrix
 

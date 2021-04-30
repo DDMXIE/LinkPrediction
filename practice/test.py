@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from decimal import Decimal
 from sklearn import metrics
 import random
+import networkx as nx
 
 def loadData():
     data_grid = pd.read_csv('./data/USAir.txt', sep='\t', header=None, index_col=False)
@@ -57,6 +58,17 @@ def getNumOfNodes(matrix_df):
 def getNumOfEdges(matrix_df):
     return matrix_df.shape[0]
 
+
+def getDegreeHeterogeneity(matrix_df):
+    G = nx.Graph()
+    for row in matrix_df.values:
+        G.add_edge(row[0], row[1])
+    ak = np.average([n for n in dict(G.degree()).values()])
+    print(ak)
+    H = sum([abs(G.degree[i] - G.degree[j]) for i in G.nodes() for j in G.nodes()]) / (2 * ak * (len(G) ** 2))
+    print(H)
+    return round(H, 4)
+
 if __name__ == '__main__':
     # 初始化 解析
     data_grid = loadData()
@@ -81,6 +93,9 @@ if __name__ == '__main__':
 
     number_edges = getNumOfEdges(data_grid)
     print('M: %d' % number_edges)
+
+    degree_heterogeneity = getDegreeHeterogeneity(data_grid)
+    print('H: %d' % degree_heterogeneity)
 
     # # 求出邻接矩阵
     # # 总邻接矩阵
