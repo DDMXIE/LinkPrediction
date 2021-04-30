@@ -9,8 +9,8 @@ import networkx as nx
 
 
 def loadData():
-    data_grid = pd.read_csv('./data/USAir.txt', sep='\t', header=None, index_col=False)
-    # data_grid = pd.read_csv('./data/Grid.txt', sep=' ', header=None, index_col=False)
+    # data_grid = pd.read_csv('./data/USAir.txt', sep='\t', header=None, index_col=False)
+    data_grid = pd.read_csv('./data/Grid.txt', sep=' ', header=None, index_col=False)
     return data_grid
 
 def initAndMergeData(data_grid):
@@ -91,8 +91,13 @@ def getC(matrix_df):
         for j in range(len(matrix)):
             if (matrix[i][j] == 1):
                 G.add_edge(i, j)
-    C = nx.average_clustering(G)
-    return C
+
+    C = nx.clustering(G)
+    a = list(C.values())
+    a_np = np.array(a)
+    avg = np.mean(a_np)
+    # C = nx.average_clustering(G)
+    return avg
 
 def getr(matrix_df):
     G = nx.Graph()
@@ -147,7 +152,8 @@ if __name__ == '__main__':
     # 总邻接矩阵
     data_grid_adjMatrix = getAdjacencyMatrix(data_grid_df, 4941)
 
-    print('------------- USAir DataSet topo --------------')
+    # print('------------- USAir DataSet topo --------------')
+    print('------------- Grid DataSet topo --------------')
 
     N = getN(data_grid)
     print('N: %d' % N)
