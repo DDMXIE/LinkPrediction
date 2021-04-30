@@ -7,8 +7,10 @@ from sklearn import metrics
 import random
 import networkx as nx
 
+
 def loadData():
     data_grid = pd.read_csv('./data/USAir.txt', sep='\t', header=None, index_col=False)
+    # data_grid = pd.read_csv('./data/Grid.txt', sep=' ', header=None, index_col=False)
     return data_grid
 
 def initAndMergeData(data_grid):
@@ -50,24 +52,79 @@ def getContraryMatrix(matrix_df):
     matrix3 = matrix2.replace({2: 0})
     return matrix3
 
-def getNumOfNodes(matrix_df):
+def getN(matrix_df):
     matrix_df_sort = matrix_df.sort_values(by=1)
     max = matrix_df_sort.max()
     return max.max()
 
-def getNumOfEdges(matrix_df):
+def getM(matrix_df):
     return matrix_df.shape[0]
 
 
-def getDegreeHeterogeneity(matrix_df):
+def getNc(data_grid,matrix_df):
     G = nx.Graph()
-    for row in matrix_df.values:
-        G.add_edge(row[0], row[1])
-    ak = np.average([n for n in dict(G.degree()).values()])
-    print(ak)
-    H = sum([abs(G.degree[i] - G.degree[j]) for i in G.nodes() for j in G.nodes()]) / (2 * ak * (len(G) ** 2))
-    print(H)
-    return round(H, 4)
+    matrix = matrix_df.values
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if (matrix[i][j] == 1):
+                G.add_edge(i, j)
+    u = getN(data_grid)
+    res = nx.number_connected_components(G)
+    Nc = str(u) + "/" + str(res)
+    return Nc
+
+def gete(matrix_df):
+    G = nx.Graph()
+    matrix = matrix_df.values
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if (matrix[i][j] == 1):
+                G.add_edge(i, j)
+    e = nx.global_efficiency(G)
+    return e
+
+
+def getC(matrix_df):
+    G = nx.Graph()
+    matrix = matrix_df.values
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if (matrix[i][j] == 1):
+                G.add_edge(i, j)
+    C = nx.average_clustering(G)
+    return C
+
+def getr(matrix_df):
+    G = nx.Graph()
+    matrix = matrix_df.values
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if (matrix[i][j] == 1):
+                G.add_edge(i, j)
+    r = nx.degree_assortativity_coefficient(G)
+    return r
+
+
+def getH(matrix_df):
+    G = nx.Graph()
+    matrix = matrix_df.values
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if (matrix[i][j] == 1):
+                G.add_edge(i, j)
+    b = nx.degree(G)
+    a = []
+    for item in b:
+        a.append(item[1])
+    valuelist = a
+    valuelist_np = np.array(valuelist)
+    valuelist_np_2 = valuelist_np * valuelist_np
+    avg_1 = np.mean(valuelist_np_2)
+    avg_2 = np.mean(valuelist_np)
+    deno = avg_2 * avg_2
+    H = avg_1 / deno
+
+    return H
 
 if __name__ == '__main__':
     # 初始化 解析
@@ -86,20 +143,34 @@ if __name__ == '__main__':
     data_grid_df = pd.DataFrame(data_grid)
     data_grid_train_df = pd.DataFrame(data_grid_train)
 
-    print('-------------result--------------')
+    # 求出邻接矩阵
+    # 总邻接矩阵
+    data_grid_adjMatrix = getAdjacencyMatrix(data_grid_df, 4941)
 
-    number_nodes = getNumOfNodes(data_grid)
-    print('N: %d' % number_nodes)
+    print('------------- USAir DataSet topo --------------')
 
-    number_edges = getNumOfEdges(data_grid)
-    print('M: %d' % number_edges)
+    N = getN(data_grid)
+    print('N: %d' % N)
 
-    degree_heterogeneity = getDegreeHeterogeneity(data_grid)
-    print('H: %d' % degree_heterogeneity)
+    M = getM(data_grid)
+    print('M: %d' % M)
 
-    # # 求出邻接矩阵
-    # # 总邻接矩阵
-    # data_grid_adjMatrix = getAdjacencyMatrix(data_grid_df, 332)
+    Nc = getNc(data_grid,data_grid_adjMatrix)
+    print('Nc: %s' % Nc)
+
+    e = gete(data_grid_adjMatrix)
+    print('e: %.3f' % e)
+
+    C = getC(data_grid_adjMatrix)
+    print('C: %.3f' % C)
+
+    r = getr(data_grid_adjMatrix)
+    print('r: %.3f' % r)
+
+    H = getH(data_grid_adjMatrix)
+    print('H: %.2f' % H)
+
+
     #
     #
     # # 训练集的邻接矩阵
