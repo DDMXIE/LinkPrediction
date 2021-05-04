@@ -4,8 +4,12 @@
 @Dec    : READ_ME about 9 measures of similarity and RA LP
 
 代码说明：
-practice2.py    :   各算法及AUC评估实现代码（因只有Grid数据集文中实现过，以Grid Dataset为例）
+practice1.py    :   各算法及AUC评估实现代码（以USAir Dataset为例）
+practice2.py    :   各算法及AUC评估实现代码（以Grid Dataset为例）
+dataTransform.py:   数据集处理文件（用于处理数据集文件）
+topo.py         :   计算图的拓扑结构
 data            :   数据集（Grid.txt 符合文中数据集）
+data gml        :   包含待处理数据集和处理完成的数据集
 
 API函数说明：
 getSimMatrixBy***()    :   各相似性算法实现层

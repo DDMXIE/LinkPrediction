@@ -1,16 +1,17 @@
+# @Author : tony
+# @Date   : 2021/4/30
+# @Title  : epjb2009 paper practice
+# @Dec    : compute topo structure of a graph
+
 import pandas as pd
 import numpy as np
-import scipy as sp
 from sklearn.model_selection import train_test_split
-from decimal import Decimal
-from sklearn import metrics
-import random
 import networkx as nx
 
 
 def loadData():
-    # data_grid = pd.read_csv('./data/USAir.txt', sep='\t', header=None, index_col=False)
-    data_grid = pd.read_csv('./data/Grid.txt', sep=' ', header=None, index_col=False)
+    data_grid = pd.read_csv('./data/USAir.txt', sep='\t', header=None, index_col=False)
+    # data_grid = pd.read_csv('./data/Grid.txt', sep=' ', header=None, index_col=False)
     return data_grid
 
 def initAndMergeData(data_grid):
@@ -152,8 +153,8 @@ if __name__ == '__main__':
     # 总邻接矩阵
     data_grid_adjMatrix = getAdjacencyMatrix(data_grid_df, 4941)
 
-    # print('------------- USAir DataSet topo --------------')
-    print('------------- Grid DataSet topo --------------')
+    print('------------- USAir DataSet topo --------------')
+    # print('------------- Grid DataSet topo --------------')
 
     N = getN(data_grid)
     print('N: %d' % N)
