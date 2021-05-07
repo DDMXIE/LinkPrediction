@@ -56,19 +56,19 @@ def save(edgeIdList, fileName):
     f.close()
 
 if __name__ == '__main__':
-    # print('------------- SRART INT-------------')
+    # print('------------- SRART Internet-------------')
     # edge_list = readINT('./data gml/INT.gml')
     # save(edge_list, './data gml/Internet.txt')
-    # print('------------- INT　END -------------')
+    # print('------------- Internet　END -------------')
 
-    # print('------------- SRART PB-------------')
+    # print('------------- SRART Political blogs-------------')
     # edge_list = readPB('./data gml/PB.gml')
     # print(edge_list)
     # save(edge_list, './data gml/Political blogs.txt')
-    # print('------------- PB　END -------------')
+    # print('------------- Political blogs　END -------------')
 
-    print('------------- SRART Grid-------------')
+    print('------------- SRART Power grid-------------')
     edge_list = readGrid('./data gml/Grid.gml')
     print(edge_list)
     save(edge_list, 'data gml/Power grid.txt')
-    print('------------- Grid　END -------------')
+    print('------------- Power grid　END -------------')
