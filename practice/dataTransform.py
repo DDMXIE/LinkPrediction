@@ -58,17 +58,17 @@ def save(edgeIdList, fileName):
 if __name__ == '__main__':
     # print('------------- SRART INT-------------')
     # edge_list = readINT('./data gml/INT.gml')
-    # save(edge_list, './data gml/INT.txt')
+    # save(edge_list, './data gml/Internet.txt')
     # print('------------- INT　END -------------')
 
     # print('------------- SRART PB-------------')
     # edge_list = readPB('./data gml/PB.gml')
     # print(edge_list)
-    # save(edge_list, './data gml/PB.txt')
+    # save(edge_list, './data gml/Political blogs.txt')
     # print('------------- PB　END -------------')
 
     print('------------- SRART Grid-------------')
     edge_list = readGrid('./data gml/Grid.gml')
     print(edge_list)
-    save(edge_list, './data gml/Grid.txt')
+    save(edge_list, 'data gml/Power grid.txt')
     print('------------- Grid　END -------------')
